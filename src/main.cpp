@@ -4,6 +4,7 @@
 #include <driver/i2s.h>
 #include <esp_task_wdt.h>
 #include <PubSubClient.h>
+#include <Adafruit_SSD1306.h>
 #include "I2SMicSampler.h"
 #include "ADCSampler.h"
 #include "I2SOutput.h"
@@ -15,6 +16,9 @@
 #include "Buzzer.h" 
 #include "IndicatorLight.h"
 #include "RoboEyes.h"
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+roboEyes roboEyes;
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
@@ -100,6 +104,71 @@ void setup_mqtt()
       Serial.print("Failed, rc=");
       Serial.println(mqtt_client.state());
       delay(2000);
+    }
+  }
+}
+
+void RoboEyesSetup() {
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C or 0x3D
+    //Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  // Startup robo eyes
+  roboEyes.begin(SCREEN_WIDTH, SCREEN_HEIGHT, 100); // screen-width, screen-height, max framerate
+  roboEyes.close(); // start with closed eyes 
+  roboEyes.setPosition(DEFAULT); // eyes should be initially centered
+
+  // Define eyes behaviour for demonstration
+  roboEyes.setAutoblinker(ROBO_ON, 3, 2); // Start auto blinker animation cycle -> bool active, int interval, int variation -> turn on/off, set interval between each blink in full seconds, set range for random interval variation in full seconds
+  roboEyes.setIdleMode(ROBO_ON, 3, 1); // Start idle animation cycle (eyes looking in random directions) -> set interval between each eye repositioning in full seconds, set range for random time interval variation in full seconds
+
+  //display.invertDisplay(true); // show inverted display colors (black eyes on bright background)
+
+}
+
+void RoboEyes() {
+  if (!showConfigMode){
+    roboEyes.update();  // Updates eye drawings limited by max framerate (good for fast controllers to limit animation speed). 
+                        // If you want to use the full horsepower of your controller without limits, you can use drawEyes(); instead.
+  } else {
+    // Show current config mode headline in display
+    display.clearDisplay(); // clear screen
+    // Basic text setup for displaying config mode headlines
+    display.setTextSize(2);
+    display.setTextColor(WHITE);
+    display.setCursor(0,3);
+    if(configMode == EYES_WIDTHS){
+      display.println("Widths"); 
+      display.println(roboEyes.eyeLwidthCurrent);
+      }
+    else if(configMode == EYES_HEIGHTS){
+      display.println("Heights"); 
+      display.println(roboEyes.eyeLheightCurrent);
+      }
+    else if(configMode == EYES_BORDERRADIUS){
+      display.println("Border \nRadius"); 
+      display.println(roboEyes.eyeLborderRadiusCurrent);
+      }
+    else if(configMode == EYES_SPACEBETWEEN){
+      display.println("Space \nBetween"); 
+      display.println(roboEyes.spaceBetweenCurrent);
+      }
+    else if(configMode == CYCLOPS_TOGGLE){
+      display.println("Cyclops \nToggle");
+      }
+    else if(configMode == CURIOUS_TOGGLE){
+      display.println("Curiosity \nToggle");
+      }
+    else if(configMode == PREDEFINED_POSITIONS){
+      display.println("Predefined\nPositions"); 
+      roboEyes.setIdleMode(0); // turn off idle mode
+      roboEyes.setPosition(DEFAULT); // start with middle centered eyes
+      }
+    display.display(); // additionally show configMode on display
+    if(millis() >= showConfigModeTimer+showConfigModeDuration){
+      showConfigMode = 0; // don't show the current config mode on the screen anymore
     }
   }
 }
