@@ -20,6 +20,13 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 roboEyes roboEyes;
 
+byte configMode = 6; // for saving current config mode state
+byte mood = 0; // Mood switch
+byte position = 0; // Position switch
+bool showConfigMode = 0; // for showing current config mode on display
+unsigned long showConfigModeTimer = 0;
+int showConfigModeDuration = 1500; // how long should the current config mode headline be displayed?
+
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 

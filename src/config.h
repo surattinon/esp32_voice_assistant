@@ -41,9 +41,6 @@
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 
-byte mood = 0; // Mood switch
-byte position = 0; // Position switch
-
 // Name aliases for different config mode states
 #define EYES_WIDTHS 0
 #define EYES_HEIGHTS 1
@@ -52,7 +49,3 @@ byte position = 0; // Position switch
 #define CYCLOPS_TOGGLE 4
 #define CURIOUS_TOGGLE 5
 #define PREDEFINED_POSITIONS 6
-byte configMode = 6; // for saving current config mode state
-bool showConfigMode = 0; // for showing current config mode on display
-unsigned long showConfigModeTimer = 0;
-int showConfigModeDuration = 1500; // how long should the current config mode headline be displayed?
