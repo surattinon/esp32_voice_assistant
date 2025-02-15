@@ -14,6 +14,7 @@
 #include "Speaker.h"
 #include "Buzzer.h" 
 #include "IndicatorLight.h"
+#include "RoboEyes.h"
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
@@ -109,6 +110,7 @@ void setup()
   Serial.begin(115200);
   delay(1000);
   Serial.println("Starting up");
+  RoboEyesSetup();
   // start up wifi
   // launch WiFi
   WiFi.mode(WIFI_STA);
@@ -170,6 +172,7 @@ void setup()
 
 void loop()
 {
-  vTaskDelay(1000);
+  vTaskDelay(50);
+  RoboEyes();
   mqtt_client.loop();
 }

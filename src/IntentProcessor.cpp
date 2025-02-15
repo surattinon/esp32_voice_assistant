@@ -3,6 +3,7 @@
 #include "Buzzer.h"
 #include <Arduino.h>
 #include <PubSubClient.h>
+#include "RoboEyes.h"
 
 IntentProcessor::IntentProcessor(Speaker *speaker, Buzzer *buzzer, PubSubClient *mqtt) { 
   m_speaker = speaker; 

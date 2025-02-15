@@ -10,6 +10,7 @@
 #include "WitAiChunkedUploader.h"
 #include "../config.h"
 #include <string.h>
+#include "RoboEyes.h"
 
 #define WINDOW_SIZE 320
 #define STEP_SIZE 160
@@ -31,6 +32,7 @@ void RecogniseCommandState::enterState()
     // indicate that we are now recording audio
     m_indicator_light->setState(ON);
     m_buzzer->playWake();
+    RoboEyesSetMood(3);
 
     // stash the start time - we will limit ourselves to 5 seconds of data
     m_start_time = millis();
