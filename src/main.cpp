@@ -18,7 +18,6 @@
 #include "RoboEyes.h"
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-roboEyes roboEyes;
 
 byte configMode = 6; // for saving current config mode state
 byte mood = 0; // Mood switch

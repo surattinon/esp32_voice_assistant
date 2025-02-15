@@ -640,3 +640,5 @@ void drawEyes(){
 }; // end of class roboEyes
 
 #endif
+
+extern roboEyes roboEyes;

@@ -12,7 +12,6 @@
 #include <string.h>
 #include "RoboEyes.h"
 
-roboEyes roboEyes;
 
 #define WINDOW_SIZE 320
 #define STEP_SIZE 160
