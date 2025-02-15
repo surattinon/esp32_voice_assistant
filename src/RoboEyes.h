@@ -53,7 +53,7 @@
 #define NW 8 // north-west, top left 
 // for middle center set "DEFAULT"
 
-class roboEyes
+class RoboEyes
 {
 private:
 Adafruit_SSD1306 display;
@@ -639,6 +639,6 @@ void drawEyes(){
 
 }; // end of class roboEyes
 
-#endif
+extern RoboEyes roboEyes;
 
-extern roboEyes roboEyes;
+#endif
