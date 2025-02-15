@@ -4,6 +4,7 @@
 **/.ccls-cache
 **/.cache
 **/test
+**/data
 **/.travis.yml
 **/.vscode/extensions.json
 **/.vscode/settings.json
