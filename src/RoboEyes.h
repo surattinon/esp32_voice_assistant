@@ -22,6 +22,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <Adafruit_SSD1306.h>
 
 #ifndef _ROBOEYES_H
 #define _ROBOEYES_H
@@ -55,6 +56,7 @@
 class roboEyes
 {
 private:
+Adafruit_SSD1306 display;
 
 // Yes, everything is currently still accessible. Be responsibly and don't mess things up :)
 
