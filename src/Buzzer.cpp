@@ -44,10 +44,17 @@ void Buzzer::playSuccess() {
 }
 
 void Buzzer::playError() {
-    beep(400, 150);
+    beep(784, 70);
+    delay(100);
+    beep(400, 70);
     beep(400, 70);
 }
 
 void Buzzer::playWake() {
+    beep(400, 70);
+}
+
+void Buzzer::playListening() {
+    beep(400, 70);
     beep(1175, 70);
 }

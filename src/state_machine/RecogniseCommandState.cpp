@@ -29,7 +29,7 @@ void RecogniseCommandState::enterState()
 {
     // indicate that we are now recording audio
     m_indicator_light->setState(ON);
-    m_buzzer->playWake();
+    // m_buzzer->playWake();
     // roboEyes.setMood(EYES_HAPPY);
 
     // stash the start time - we will limit ourselves to 5 seconds of data

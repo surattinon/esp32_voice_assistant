@@ -23,6 +23,7 @@ public:
     void playSuccess();
     void playError();
     void playWake();
+    void playListening();
 };
 
 #endif

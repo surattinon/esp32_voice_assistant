@@ -22,6 +22,8 @@ private:
     Adafruit_SSD1306 *m_display;
     roboEyes *m_eyes;
 
+    Buzzer *m_buzzer;
+
 public:
     Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display);
     ~Application();

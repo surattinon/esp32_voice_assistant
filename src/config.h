@@ -15,13 +15,9 @@
 #define I2S_MIC_SERIAL_DATA GPIO_NUM_32
 
 // Analog Microphone Settings - ADC1_CHANNEL_7 is GPIO35
-#define ADC_MIC_CHANNEL ADC1_CHANNEL_7
+// #define ADC_MIC_CHANNEL ADC1_CHANNEL_7
 
-// speaker settings
-#define I2S_SPEAKER_SERIAL_CLOCK GPIO_NUM_14
-#define I2S_SPEAKER_LEFT_RIGHT_CLOCK GPIO_NUM_12
-#define I2S_SPEAKER_SERIAL_DATA GPIO_NUM_27
-
+// buzzer settings
 #define BUZZER_PIN GPIO_NUM_19
 
 // command recognition settings
