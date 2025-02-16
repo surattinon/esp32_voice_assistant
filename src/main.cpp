@@ -6,6 +6,10 @@
 #include <esp_task_wdt.h>
 #include <PubSubClient.h>
 #include <FluxGarage_RoboEyes.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
 #include "I2SMicSampler.h"
 #include "ADCSampler.h"
 #include "I2SOutput.h"
@@ -18,13 +22,8 @@
 #include "IndicatorLight.h"
 
 
-
-byte configMode = 6; // for saving current config mode state
-byte mood = 0; // Mood switch
-byte position = 0; // Position switch
-bool showConfigMode = 0; // for showing current config mode on display
-unsigned long showConfigModeTimer = 0;
-int showConfigModeDuration = 1500; // how long should the current config mode headline be displayed?
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+roboEyes eyes;
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
@@ -119,6 +118,14 @@ void setup()
 {
   Serial.begin(115200);
   delay(1000);
+
+  Wire.begin();
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+  eyes.begin(SCREEN_WIDTH, SCREEN_HEIGHT, 30); // 30 fps
+
   Serial.println("Starting up");
   // start up wifi
   // launch WiFi
@@ -185,4 +192,5 @@ void loop()
 {
   vTaskDelay(50);
   mqtt_client.loop();
+  eyes.setAutoblinker(true, 2, 3);  // Auto-blink every 2-5 seconds
 }
