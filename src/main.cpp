@@ -17,7 +17,6 @@
 #include "Application.h"
 #include "SPIFFS.h"
 #include "IntentProcessor.h"
-#include "Speaker.h"
 #include "Buzzer.h" 
 #include "IndicatorLight.h"
 
@@ -155,24 +154,20 @@ void setup()
   I2SSampler *i2s_sampler = new ADCSampler(ADC_UNIT_1, ADC_MIC_CHANNEL);
 #endif
 
-  // start the i2s speaker output
-  I2SOutput *i2s_output = new I2SOutput();
-  i2s_output->start(I2S_NUM_1, i2s_speaker_pins);
-  Speaker *speaker = new Speaker(i2s_output);
   Buzzer *buzzer = new Buzzer(BUZZER_PIN);
 
   // indicator light to show when we are listening
   IndicatorLight *indicator_light = new IndicatorLight();
 
   // and the intent processor
-  IntentProcessor *intent_processor = new IntentProcessor(speaker, buzzer, &mqtt_client);
+  IntentProcessor *intent_processor = new IntentProcessor(buzzer, &mqtt_client);
 
   // intent_processor->addDevice("light", GPIO_NUM_19);
   // intent_processor->addDevice("bedroom", GPIO_NUM_21);
   // intent_processor->addDevice("table", GPIO_NUM_23);
 
   // create our application
-  Application *application = new Application(i2s_sampler, intent_processor, speaker, buzzer, indicator_light, &display);
+  Application *application = new Application(i2s_sampler, intent_processor, buzzer, indicator_light, &display);
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;

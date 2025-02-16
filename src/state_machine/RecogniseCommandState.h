@@ -7,7 +7,6 @@ class I2SSampler;
 class WiFiClient;
 class HTTPClient;
 class IndicatorLight;
-class Speaker;
 class IntentProcessor;
 class WitAiChunkedUploader;
 class Buzzer;
@@ -21,14 +20,13 @@ private:
     int m_last_audio_position;
 
     IndicatorLight *m_indicator_light;
-    Speaker *m_speaker;
     Buzzer *m_buzzer;
     IntentProcessor *m_intent_processor;
 
     WitAiChunkedUploader *m_speech_recogniser;
 
 public:
-    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker, Buzzer *buzzer, IntentProcessor *intent_processor);
+    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor);
     void enterState();
     bool run();
     void exitState();

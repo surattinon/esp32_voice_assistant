@@ -9,7 +9,6 @@ class I2SSampler;
 class I2SOutput;
 class State;
 class IndicatorLight;
-class Speaker;
 class Buzzer;
 class IntentProcessor;
 
@@ -24,7 +23,7 @@ private:
     roboEyes *m_eyes;
 
 public:
-    Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Speaker *speaker, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display);
+    Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display);
     ~Application();
     void run();
 };

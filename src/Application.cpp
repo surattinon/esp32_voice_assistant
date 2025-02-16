@@ -3,16 +3,15 @@
 #include "state_machine/DetectWakeWordState.h"
 #include "state_machine/RecogniseCommandState.h"
 #include "IndicatorLight.h"
-#include "Speaker.h"
 #include "Buzzer.h"
 #include "IntentProcessor.h"
 
-Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Speaker *speaker, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display)
+Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display)
 {
     // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
     // command recongiser - streams audio to the server for recognition
-    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, speaker, buzzer, intent_processor);
+    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, buzzer, intent_processor);
     // start off in the detecting wakeword state
     m_current_state = m_detect_wake_word_state;
     m_current_state->enterState();
@@ -25,7 +24,7 @@ Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_pr
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
 
     // command recognizer - streams audio to the server for recognition
-    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, speaker, buzzer, intent_processor);
+    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, buzzer, intent_processor);
 
     // start off in the detecting wakeword state
     m_current_state = m_detect_wake_word_state;
@@ -36,17 +35,40 @@ Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_pr
     m_eyes->setIdleMode(true);
 }
 
-Application::~Application()
-{
-    delete m_eyes;
-}
+// Application::~Application()
+// {
+//     delete m_eyes;
+// }
 
 // process the next batch of samples
 void Application::run()
 {
     bool state_done = m_current_state->run();
 
-    m_eyes->update();
+    if (m_current_state == m_detect_wake_word_state)
+    {
+
+        m_eyes->setMood(EYES_DEFAULT);
+
+        m_eyes->setIdleMode(true);
+    }
+
+    else if (m_current_state == m_recognise_command_state)
+    {
+
+        m_eyes->setMood(EYES_HAPPY);
+
+        m_eyes->setIdleMode(false);
+    }
+
+    static unsigned long lastUpdate = 0;
+
+    if (millis() - lastUpdate > 50)
+    { // Update every 50ms instead of every loop
+
+        m_eyes->update();
+        lastUpdate = millis();
+    }
 
     if (state_done)
     {
@@ -60,9 +82,11 @@ void Application::run()
         else
         {
             m_current_state = m_detect_wake_word_state;
-            m_eyes->blink(); // Blink when returning to wake word detection
         }
         m_current_state->enterState();
     }
+
+    // Update eyes less frequently
+
     vTaskDelay(10);
 }

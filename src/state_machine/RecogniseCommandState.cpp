@@ -4,7 +4,6 @@
 #include "RingBuffer.h"
 #include "RecogniseCommandState.h"
 #include "IndicatorLight.h"
-#include "Speaker.h"
 #include "Buzzer.h"
 #include "IntentProcessor.h"
 #include "WitAiChunkedUploader.h"
@@ -17,12 +16,11 @@
 #define POOLING_SIZE 6
 #define AUDIO_LENGTH 16000
 
-RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Speaker *speaker, Buzzer *buzzer, IntentProcessor *intent_processor)
+RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor)
 {
     // save the sample provider for use later
     m_sample_provider = sample_provider;
     m_indicator_light = indicator_light;
-    m_speaker = speaker;
     m_buzzer = buzzer;
     m_intent_processor = intent_processor;
     m_speech_recogniser = NULL;

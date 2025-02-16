@@ -1,11 +1,9 @@
 #include "IntentProcessor.h"
-#include "Speaker.h"
 #include "Buzzer.h"
 #include <Arduino.h>
 #include <PubSubClient.h>
 
-IntentProcessor::IntentProcessor(Speaker *speaker, Buzzer *buzzer, PubSubClient *mqtt) { 
-  m_speaker = speaker; 
+IntentProcessor::IntentProcessor(Buzzer *buzzer, PubSubClient *mqtt) { 
   m_buzzer = buzzer;
   mqtt_client = mqtt;
 }
@@ -58,15 +56,6 @@ IntentResult IntentProcessor::turnOnDevice(const Intent &intent) {
   return SUCCESS;
 }
 
-IntentResult IntentProcessor::tellJoke() {
-  m_speaker->playRandomJoke();
-  return SILENT_SUCCESS;
-}
-
-IntentResult IntentProcessor::life() {
-  m_speaker->playLife();
-  return SILENT_SUCCESS;
-}
 
 IntentResult IntentProcessor::processIntent(const Intent &intent) {
   if (intent.text.empty()) {
@@ -81,12 +70,6 @@ IntentResult IntentProcessor::processIntent(const Intent &intent) {
   Serial.printf("Intent is %s\n", intent.intent_name.c_str());
   if (intent.intent_name == "Turn_off_and_on") {
     return turnOnDevice(intent);
-  }
-  if (intent.intent_name == "Tell_joke") {
-    return tellJoke();
-  }
-  if (intent.intent_name == "Life") {
-    return life();
   }
 
   return FAILED;

@@ -5,7 +5,6 @@
 #include "WitAiChunkedUploader.h"
 #include <PubSubClient.h>
 
-class Speaker;
 class Buzzer;
 
 enum IntentResult
@@ -22,13 +21,12 @@ private:
     IntentResult tellJoke();
     IntentResult life();
 
-    Speaker *m_speaker;
     Buzzer *m_buzzer;
 
     PubSubClient *mqtt_client;
 
 public:
-    IntentProcessor(Speaker *speaker, Buzzer *buzzer, PubSubClient *mqtt);
+    IntentProcessor(Buzzer *buzzer, PubSubClient *mqtt);
     void addDevice(const std::string &name, int gpio_pin);
     IntentResult processIntent(const Intent &intent);
 
