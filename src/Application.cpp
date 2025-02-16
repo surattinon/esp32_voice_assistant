@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include "Application.h"
 #include "state_machine/DetectWakeWordState.h"
 #include "state_machine/RecogniseCommandState.h"
@@ -33,6 +35,13 @@ Application::~Application()
     delete m_eyes;
 }
 
+void playListeningSound(void *param)
+{
+    Buzzer *buzzer = static_cast<Buzzer *>(param);
+    buzzer->playListening();
+    vTaskDelete(NULL); // Delete the task once done
+}
+
 // process the next batch of samples
 void Application::run()
 {
@@ -48,7 +57,7 @@ void Application::run()
 
     else if (m_current_state == m_recognise_command_state)
     {
-        m_eyes->setIdleMode(false);
+            m_eyes->setIdleMode(false);
     }
 
     // static unsigned long lastUpdate = 0;
@@ -69,14 +78,14 @@ void Application::run()
         if (m_current_state == m_detect_wake_word_state)
         {
             m_current_state = m_recognise_command_state;
-            m_eyes->setMood(EYES_HAPPY);
-            m_eyes->anim_laugh(); // Play laugh animation when wake word detected
+            m_eyes->anim_laugh();
             m_buzzer->playListening();
         }
         else
         {
             m_current_state = m_detect_wake_word_state;
-            m_eyes->setMood(EYES_DEFAULT);
+            // m_eyes->setMood(EYES_DEFAULT);
+        m_eyes->setMood(EYES_HAPPY);
         }
         m_current_state->enterState();
     }

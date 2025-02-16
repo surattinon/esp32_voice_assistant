@@ -177,5 +177,5 @@ void setup()
 void loop()
 {
   mqtt_client.loop();
-  vTaskDelay(20);
+  vTaskDelay(50);
 }

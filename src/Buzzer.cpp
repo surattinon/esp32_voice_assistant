@@ -55,6 +55,6 @@ void Buzzer::playWake() {
 }
 
 void Buzzer::playListening() {
-    beep(400, 70);
-    beep(1175, 70);
+    beep(392, 70);
+    beep(622, 70);
 }
