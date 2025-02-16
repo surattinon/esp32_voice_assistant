@@ -23,7 +23,6 @@
 
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-roboEyes eyes;
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
@@ -124,7 +123,6 @@ void setup()
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
-  eyes.begin(SCREEN_WIDTH, SCREEN_HEIGHT, 30); // 30 fps
 
   Serial.println("Starting up");
   // start up wifi
@@ -174,7 +172,7 @@ void setup()
   // intent_processor->addDevice("table", GPIO_NUM_23);
 
   // create our application
-  Application *application = new Application(i2s_sampler, intent_processor, speaker, buzzer, indicator_light);
+  Application *application = new Application(i2s_sampler, intent_processor, speaker, buzzer, indicator_light, &display);
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;
@@ -190,7 +188,6 @@ void setup()
 
 void loop()
 {
-  vTaskDelay(50);
   mqtt_client.loop();
-  eyes.setAutoblinker(true, 2, 3);  // Auto-blink every 2-5 seconds
+  vTaskDelay(50);
 }
