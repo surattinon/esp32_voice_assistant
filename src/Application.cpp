@@ -8,7 +8,7 @@
 #include "Buzzer.h"
 #include "IntentProcessor.h"
 
-Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, roboEyes *eyes)
+Application::Application(I2SSampler* sample_provider, IntentProcessor* intent_processor, Buzzer* buzzer, IndicatorLight* indicator_light, roboEyes* eyes)
 {
     // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
@@ -27,9 +27,9 @@ Application::~Application()
     delete m_eyes;
 }
 
-void playListeningSound(void *param)
+void playListeningSound(void* param)
 {
-    Buzzer *buzzer = static_cast<Buzzer *>(param);
+    Buzzer* buzzer = static_cast<Buzzer*>(param);
     buzzer->playListening();
     vTaskDelete(NULL); // Delete the task once done
 }
@@ -48,19 +48,16 @@ void Application::run()
         m_eyes->setAutoblinker(EYES_ON, 4, 6);
     }
 
-    if (state_done)
-    {
+    if (state_done) {
         m_current_state->exitState();
         // switch to the next state - very simple state machine so we just go to the other state...
-        if (m_current_state == m_detect_wake_word_state)
-        {
+        if (m_current_state == m_detect_wake_word_state) {
             m_current_state = m_recognise_command_state;
         }
-        else
-        {
+        else {
             m_current_state = m_detect_wake_word_state;
-            m_eyes->setMood(EYES_HAPPY);
         }
+
         m_current_state->enterState();
     }
 

@@ -16,7 +16,7 @@
 #define POOLING_SIZE 6
 #define AUDIO_LENGTH 16000
 
-RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor, roboEyes *eyes)
+RecogniseCommandState::RecogniseCommandState(I2SSampler* sample_provider, IndicatorLight* indicator_light, Buzzer* buzzer, IntentProcessor* intent_processor, roboEyes* eyes)
 {
     // save the sample provider for use later
     m_sample_provider = sample_provider;
@@ -41,7 +41,6 @@ void RecogniseCommandState::enterState()
 
     uint32_t free_ram = esp_get_free_heap_size();
     Serial.printf("Free ram before connection %d\n", free_ram);
-    m_eyes->setMood(EYES_HAPPY);
     m_buzzer->playListening();
     m_eyes->anim_laugh();
 
@@ -74,7 +73,7 @@ bool RecogniseCommandState::run()
     {
         // send the samples to the server
         m_speech_recogniser->startChunk(sample_count * sizeof(int16_t));
-        RingBufferAccessor *reader = m_sample_provider->getRingBufferReader();
+        RingBufferAccessor* reader = m_sample_provider->getRingBufferReader();
         reader->setIndex(m_last_audio_position);
         // send the samples up in chunks
         int16_t sample_buffer[500];
@@ -85,7 +84,7 @@ bool RecogniseCommandState::run()
                 sample_buffer[i] = reader->getCurrentSample();
                 reader->moveToNextSample();
             }
-            m_speech_recogniser->sendChunkData((const uint8_t *)sample_buffer, std::min(sample_count, 500) * 2);
+            m_speech_recogniser->sendChunkData((const uint8_t*)sample_buffer, std::min(sample_count, 500) * 2);
             sample_count -= 500;
         }
         m_last_audio_position = reader->getIndex();
@@ -109,10 +108,15 @@ bool RecogniseCommandState::run()
             switch (intentResult)
             {
             case SUCCESS:
+                m_eyes->setMood(EYES_HAPPY);
                 m_buzzer->playSuccess();
+                m_eyes->anim_laugh();
+                delay(1000);
                 break;
             case FAILED:
+                m_eyes->setMood(EYES_TIRED);
                 m_buzzer->playError();
+                delay(1000);
                 break;
             case SILENT_SUCCESS:
                 // nothing to do

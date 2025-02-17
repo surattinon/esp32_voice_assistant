@@ -30,14 +30,21 @@
 #define MQTT_PASSWORD "finalproject"
 #define MQTT_CLIENT_ID "marvin1"
 
-// ROBO EYES SETTINGS //
+// MQTT Topic Setting
+#define TOPIC_MOTION "sensor/motion"
+#define TOPIC_PM1 "sensor/pm1"
+#define TOPIC_PM25 "sensor/pm25"
 
+// Sensors PIN
+#define PIR_PIN 4
+#define PM25PIN 14
+
+// ROBO EYES SETTINGS //
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 
-// Name aliases for different config mode states
 #define EYES_WIDTHS 0
 #define EYES_HEIGHTS 1
 #define EYES_BORDERRADIUS 2
