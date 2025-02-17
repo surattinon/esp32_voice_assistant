@@ -36,7 +36,7 @@ bool DetectWakeWordState::run()
     // get access to the samples that have been read in
     RingBufferAccessor *reader = m_sample_provider->getRingBufferReader();
     // rewind by 1 second
-    reader->rewind(16000);
+    reader->rewind(20000);
     // get hold of the input buffer for the neural network so we can feed it data
     float *input_buffer = m_nn->getInputBuffer();
     // process the samples to get the spectrogram
@@ -60,8 +60,7 @@ bool DetectWakeWordState::run()
     /*  Serial.printf("output P:%.2f \n", output);*/
     /*}*/
 
-    // use quite a high threshold to prevent false positives
-    if (output > 0.93)
+    if (output > 0.92)
     {
         m_number_of_detections++;
         if (m_number_of_detections > 1)

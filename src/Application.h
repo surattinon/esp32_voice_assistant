@@ -3,7 +3,7 @@
 
 #include "state_machine/States.h"
 #include <FluxGarage_RoboEyes.h>
-#include <Adafruit_SSD1306.h>
+// #include <Adafruit_SSD1306.h>
 
 class I2SSampler;
 class I2SOutput;
@@ -19,13 +19,11 @@ private:
     State *m_recognise_command_state;
     State *m_current_state;
 
-    Adafruit_SSD1306 *m_display;
     roboEyes *m_eyes;
-
     Buzzer *m_buzzer;
 
 public:
-    Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display);
+    Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, roboEyes *eyes);
     ~Application();
     void run();
 };

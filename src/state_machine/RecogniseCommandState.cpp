@@ -16,7 +16,7 @@
 #define POOLING_SIZE 6
 #define AUDIO_LENGTH 16000
 
-RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor)
+RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor, roboEyes *eyes)
 {
     // save the sample provider for use later
     m_sample_provider = sample_provider;
@@ -24,6 +24,8 @@ RecogniseCommandState::RecogniseCommandState(I2SSampler *sample_provider, Indica
     m_buzzer = buzzer;
     m_intent_processor = intent_processor;
     m_speech_recogniser = NULL;
+
+    m_eyes = eyes;
 }
 void RecogniseCommandState::enterState()
 {
@@ -39,6 +41,9 @@ void RecogniseCommandState::enterState()
 
     uint32_t free_ram = esp_get_free_heap_size();
     Serial.printf("Free ram before connection %d\n", free_ram);
+    m_eyes->setMood(EYES_HAPPY);
+    m_buzzer->playListening();
+    m_eyes->anim_laugh();
 
     m_speech_recogniser = new WitAiChunkedUploader(COMMAND_RECOGNITION_ACCESS_KEY);
 

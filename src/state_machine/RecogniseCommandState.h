@@ -2,6 +2,7 @@
 #define _recognise_command_state_h_
 
 #include "States.h"
+#include "FluxGarage_RoboEyes.h"
 
 class I2SSampler;
 class WiFiClient;
@@ -25,8 +26,10 @@ private:
 
     WitAiChunkedUploader *m_speech_recogniser;
 
+    roboEyes *m_eyes;
+
 public:
-    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor);
+    RecogniseCommandState(I2SSampler *sample_provider, IndicatorLight *indicator_light, Buzzer *buzzer, IntentProcessor *intent_processor, roboEyes *eyes);
     void enterState();
     bool run();
     void exitState();

@@ -8,26 +8,18 @@
 #include "Buzzer.h"
 #include "IntentProcessor.h"
 
-Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, Adafruit_SSD1306 *display)
+Application::Application(I2SSampler *sample_provider, IntentProcessor *intent_processor, Buzzer *buzzer, IndicatorLight *indicator_light, roboEyes *eyes)
 {
     // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
     // command recongiser - streams audio to the server for recognition
-    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, buzzer, intent_processor);
+    m_recognise_command_state = new RecogniseCommandState(sample_provider, indicator_light, buzzer, intent_processor, eyes);
     // start off in the detecting wakeword state
     m_current_state = m_detect_wake_word_state;
     m_current_state->enterState();
 
     m_buzzer = buzzer;
-
-    m_display = display;
-    m_eyes = new roboEyes(*display);
-    m_eyes->begin(128, 64, 30);
-
-    // Set initial eyes mood
-    m_eyes->setMood(EYES_DEFAULT);
-    m_eyes->setIdleMode(true);
-    m_eyes->setAutoblinker(true, 2, 3); 
+    m_eyes = eyes;
 }
 
 Application::~Application()
@@ -52,24 +44,9 @@ void Application::run()
     if (m_current_state == m_detect_wake_word_state)
     {
         m_eyes->setMood(EYES_DEFAULT);
-        m_eyes->setIdleMode(true);
+        m_eyes->setIdleMode(EYES_ON, 3, 6);
+        m_eyes->setAutoblinker(EYES_ON, 4, 6);
     }
-
-    else if (m_current_state == m_recognise_command_state)
-    {
-            m_eyes->setIdleMode(false);
-    }
-
-    // static unsigned long lastUpdate = 0;
-
-    // if (millis() - lastUpdate > 50)
-    // { // Update every 50ms instead of every loop
-
-    //     m_eyes->update();
-    //     lastUpdate = millis();
-    // }
-
-    m_eyes->update();
 
     if (state_done)
     {
@@ -78,14 +55,11 @@ void Application::run()
         if (m_current_state == m_detect_wake_word_state)
         {
             m_current_state = m_recognise_command_state;
-            m_eyes->anim_laugh();
-            m_buzzer->playListening();
         }
         else
         {
             m_current_state = m_detect_wake_word_state;
-            // m_eyes->setMood(EYES_DEFAULT);
-        m_eyes->setMood(EYES_HAPPY);
+            m_eyes->setMood(EYES_HAPPY);
         }
         m_current_state->enterState();
     }

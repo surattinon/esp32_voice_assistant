@@ -18,9 +18,12 @@
 #include "IntentProcessor.h"
 #include "Buzzer.h" 
 #include "IndicatorLight.h"
+#include "FluxGarage_RoboEyes.h"
 
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+roboEyes eyes(display);
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
@@ -104,6 +107,12 @@ void setup_mqtt()
   }
 }
 
+void roboEyesSetup() {
+    eyes.begin(128, 64, 30);
+    eyes.setIdleMode(EYES_ON, 2, 5);
+    eyes.setAutoblinker(EYES_ON, 2, 4); 
+}
+
 
 void setup()
 {
@@ -115,6 +124,7 @@ void setup()
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
+  roboEyesSetup();
 
   Serial.println("Starting up");
   // start up wifi
@@ -160,7 +170,7 @@ void setup()
   // intent_processor->addDevice("table", GPIO_NUM_23);
 
   // create our application
-  Application *application = new Application(i2s_sampler, intent_processor, buzzer, indicator_light, &display);
+  Application *application = new Application(i2s_sampler, intent_processor, buzzer, indicator_light, &eyes);
 
   // set up the i2s sample writer task
   TaskHandle_t applicationTaskHandle;
@@ -177,5 +187,6 @@ void setup()
 void loop()
 {
   mqtt_client.loop();
-  vTaskDelay(50);
+  eyes.update();
+  // vTaskDelay(50);
 }
