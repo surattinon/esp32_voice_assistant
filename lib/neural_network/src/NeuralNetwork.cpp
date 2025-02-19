@@ -9,72 +9,65 @@
 // approximate working size of our model
 const int kArenaSize = 25008;
 
-NeuralNetwork::NeuralNetwork()
-{
-    m_error_reporter = new tflite::MicroErrorReporter();
+NeuralNetwork::NeuralNetwork() {
+  m_error_reporter = new tflite::MicroErrorReporter();
 
-    m_tensor_arena = (uint8_t *)malloc(kArenaSize);
-    if (!m_tensor_arena)
-    {
-        TF_LITE_REPORT_ERROR(m_error_reporter, "Could not allocate arena");
-        return;
-    }
-    TF_LITE_REPORT_ERROR(m_error_reporter, "Loading model");
+  m_tensor_arena = (uint8_t *)malloc(kArenaSize);
+  if (!m_tensor_arena) {
+    TF_LITE_REPORT_ERROR(m_error_reporter, "Could not allocate arena");
+    return;
+  }
+  TF_LITE_REPORT_ERROR(m_error_reporter, "Loading model");
 
-    m_model = tflite::GetModel(converted_model_tflite);
-    if (m_model->version() != TFLITE_SCHEMA_VERSION)
-    {
-        TF_LITE_REPORT_ERROR(m_error_reporter, "Model provided is schema version %d not equal to supported version %d.",
-                             m_model->version(), TFLITE_SCHEMA_VERSION);
-        return;
-    }
-    // This pulls in the operators implementations we need
-    m_resolver = new tflite::MicroMutableOpResolver<10>();
-    m_resolver->AddConv2D();
-    m_resolver->AddMaxPool2D();
-    m_resolver->AddFullyConnected();
-    m_resolver->AddMul();
-    m_resolver->AddAdd();
-    m_resolver->AddLogistic();
-    m_resolver->AddReshape();
-    m_resolver->AddQuantize();
-    m_resolver->AddDequantize();
+  m_model = tflite::GetModel(converted_model_tflite);
+  if (m_model->version() != TFLITE_SCHEMA_VERSION) {
+    TF_LITE_REPORT_ERROR(m_error_reporter,
+                         "Model provided is schema version %d not equal to "
+                         "supported version %d.",
+                         m_model->version(), TFLITE_SCHEMA_VERSION);
+    return;
+  }
+  // This pulls in the operators implementations we need
+  m_resolver = new tflite::MicroMutableOpResolver<10>();
+  m_resolver->AddConv2D();
+  m_resolver->AddMaxPool2D();
+  m_resolver->AddFullyConnected();
+  m_resolver->AddMul();
+  m_resolver->AddAdd();
+  m_resolver->AddLogistic();
+  m_resolver->AddReshape();
+  m_resolver->AddQuantize();
+  m_resolver->AddDequantize();
 
-    // Build an interpreter to run the model with.
-    m_interpreter = new tflite::MicroInterpreter(
-        m_model, *m_resolver, m_tensor_arena, kArenaSize, m_error_reporter);
+  // Build an interpreter to run the model with.
+  m_interpreter = new tflite::MicroInterpreter(
+      m_model, *m_resolver, m_tensor_arena, kArenaSize, m_error_reporter);
 
-    // Allocate memory from the tensor_arena for the model's tensors.
-    TfLiteStatus allocate_status = m_interpreter->AllocateTensors();
-    if (allocate_status != kTfLiteOk)
-    {
-        TF_LITE_REPORT_ERROR(m_error_reporter, "AllocateTensors() failed");
-        return;
-    }
+  // Allocate memory from the tensor_arena for the model's tensors.
+  TfLiteStatus allocate_status = m_interpreter->AllocateTensors();
+  if (allocate_status != kTfLiteOk) {
+    TF_LITE_REPORT_ERROR(m_error_reporter, "AllocateTensors() failed");
+    return;
+  }
 
-    size_t used_bytes = m_interpreter->arena_used_bytes();
-    TF_LITE_REPORT_ERROR(m_error_reporter, "Used bytes %d\n", used_bytes);
+  size_t used_bytes = m_interpreter->arena_used_bytes();
+  TF_LITE_REPORT_ERROR(m_error_reporter, "Used bytes %d\n", used_bytes);
 
-    // Obtain pointers to the model's input and output tensors.
-    input = m_interpreter->input(0);
-    output = m_interpreter->output(0);
+  // Obtain pointers to the model's input and output tensors.
+  input = m_interpreter->input(0);
+  output = m_interpreter->output(0);
 }
 
-NeuralNetwork::~NeuralNetwork()
-{
-    delete m_interpreter;
-    delete m_resolver;
-    free(m_tensor_arena);
-    delete m_error_reporter;
+NeuralNetwork::~NeuralNetwork() {
+  delete m_interpreter;
+  delete m_resolver;
+  free(m_tensor_arena);
+  delete m_error_reporter;
 }
 
-float *NeuralNetwork::getInputBuffer()
-{
-    return input->data.f;
-}
+float *NeuralNetwork::getInputBuffer() { return input->data.f; }
 
-float NeuralNetwork::predict()
-{
-    m_interpreter->Invoke();
-    return output->data.f[0];
+float NeuralNetwork::predict() {
+  m_interpreter->Invoke();
+  return output->data.f[0];
 }

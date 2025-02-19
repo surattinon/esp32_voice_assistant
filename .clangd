@@ -1,0 +1,17 @@
+CompileFlags:
+  Add: [
+      -DSSIZE_MAX,
+      -DLWIP_NO_UNISTD_H=1,
+      -Dssize_t=long,
+      -D_SSIZE_T_DECLARED,
+    ]
+  Remove: [
+      -mlongcalls,
+      -fno-tree-switch-conversion,
+      -mtext-section-literals,
+      -fstrict-volatile-bitfields,
+      -free,
+      -fipa-pta,
+    ]
+Diagnostics:
+  Suppress: "pp_including_mainfile_in_preamble"

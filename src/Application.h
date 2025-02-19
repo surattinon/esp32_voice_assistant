@@ -12,8 +12,7 @@ class IndicatorLight;
 class Buzzer;
 class IntentProcessor;
 
-class Application
-{
+class Application {
 private:
     State *m_detect_wake_word_state;
     State *m_recognise_command_state;

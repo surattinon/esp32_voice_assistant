@@ -8,8 +8,7 @@
 #include "Buzzer.h"
 #include "IntentProcessor.h"
 
-Application::Application(I2SSampler* sample_provider, IntentProcessor* intent_processor, Buzzer* buzzer, IndicatorLight* indicator_light, roboEyes* eyes)
-{
+Application::Application(I2SSampler* sample_provider, IntentProcessor* intent_processor, Buzzer* buzzer, IndicatorLight* indicator_light, roboEyes* eyes) {
     // detect wake word state - waits for the wake word to be detected
     m_detect_wake_word_state = new DetectWakeWordState(sample_provider);
     // command recongiser - streams audio to the server for recognition
@@ -22,9 +21,8 @@ Application::Application(I2SSampler* sample_provider, IntentProcessor* intent_pr
     m_eyes = eyes;
 }
 
-Application::~Application()
-{
-    delete m_eyes;
+Application::~Application() {
+  delete m_eyes;
 }
 
 void playListeningSound(void* param)
