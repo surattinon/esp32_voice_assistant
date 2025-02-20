@@ -29,9 +29,8 @@ This project implements voice control on an ESP32 device using wake word detecti
    // Define other settings like MQTT, sensors, etc.
    ```
 
-3. Customize the wake word detection and command recognition by modifying the neural network models and processing in the respective state files:
-   - `src/state_machine/DetectWakeWordState.cpp`
-   - `src/state_machine/RecogniseCommandState.cpp`
+3. Customize the wake word detection by modifying the model by modify array in this files:
+   - `lib/neural_network/src/model.cc`
 
 4. Add your specific devices and GPIO pins for control in `src/main.cpp`:
    ```cpp
