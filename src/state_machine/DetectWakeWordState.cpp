@@ -36,7 +36,7 @@ bool DetectWakeWordState::run()
     // get access to the samples that have been read in
     RingBufferAccessor *reader = m_sample_provider->getRingBufferReader();
     // rewind by 1 second
-    reader->rewind(20000);
+    reader->rewind(16000);
     // get hold of the input buffer for the neural network so we can feed it data
     float *input_buffer = m_nn->getInputBuffer();
     // process the samples to get the spectrogram
