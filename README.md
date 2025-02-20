@@ -1,75 +1,50 @@
-# DIY Alexa ESP32 Firmware
+# ESP32 Voice Control
 
-This folder contains the firmware for running DIY Alexa on the ESP32.
+## Description
+This project implements voice control on an ESP32 device using wake word detection and command recognition.
 
-We are using Platform.io to build the firmware.
+## Features
+- Wake word detection
+- Command recognition
+- Indicator light and buzzer feedback
+- Intent processing
+- MQTT communication
+- RoboEyes for visual feedback
 
-You will also need to upload the SPIFFs filesystem as there are some WAV files that are played.
+## Usage
+1. Ensure you have the necessary components set up:
+   - ESP32 device
+   - I2S microphone or analog microphone
+   - Indicator light
+   - Buzzer
+   - MQTT broker for communication
+   - RoboEyes for visual feedback on 128x64 oled display
 
-If you're having problems detecting the wakeword `Marvin` then you can try lowering the detection threshold:
+2. Define your WiFi credentials and other configurations in `src/config.h`:
+   ```cpp
+   // WiFi credentials
+   #define WIFI_SSID "YourWiFiSSID"
+   #define WIFI_PSWD "YourWiFiPassword"
 
-`/src/state_machine/DetectWakeWordState.cpp` line 59.
+   // Define other settings like MQTT, sensors, etc.
+   ```
 
-```
-if (output > 0.95)
-```
+3. Customize the wake word detection and command recognition by modifying the neural network models and processing in the respective state files:
+   - `src/state_machine/DetectWakeWordState.cpp`
+   - `src/state_machine/RecogniseCommandState.cpp`
 
-Change 0.95 to something lower and you will increase the sensitivity. It's also worth logging this value out if you are having problems so you can see how well the detector is picking up the work.
+4. Add your specific devices and GPIO pins for control in `src/main.cpp`:
+   ```cpp
+   // Example:
+   intent_processor->addDevice("light", GPIO_NUM_19);
+   intent_processor->addDevice("bedroom", GPIO_NUM_21);
+   ```
 
-To understand the code the best place to start is `src/Application.cpp`. This is a very simple state machine that switched between either waiting for a wake word or trying to interpret the user's command.
+5. Set up any additional configurations or customizations in the respective files as needed.
 
-From there you can look at `src/state_machine/DetectWakeWordState.cpp' and `src/state_machine/RecogniseCommandState.cpp`.
+6. Compile and upload the code to your ESP32 device.
 
-If you've watched the video the code should be fairly easy to follow.
-
-## Config options
-
-To set things up for yourself, edit the `config.h` file and fill in your WiFi details.
-
-There are a number of options in this file that you can modify to suit your own setup.
-
-If you want to use an analog microphone instead of I2S then you need to comment out this line:
-
-```
-// are you using an I2S microphone - comment this out if you want to use an analog mic and ADC input
-#define USE_I2S_MIC_INPUT
-```
-
-And you will need to select the appropriate ADC channel to read data from:
-
-```
-// Analog Microphone Settings - ADC1_CHANNEL_7 is GPIO35
-#define ADC_MIC_CHANNEL ADC1_CHANNEL_7
-```
-
-If you are using an I2S Microphone then you need to tell the system which channel you have configure the microphone on (left or right - generally these devices default to left).
-
-```
-// Which channel is the I2S microphone on? I2S_CHANNEL_FMT_ONLY_LEFT or I2S_CHANNEL_FMT_ONLY_RIGHT
-#define I2S_MIC_CHANNEL I2S_CHANNEL_FMT_ONLY_LEFT
-// #define I2S_MIC_CHANNEL I2S_CHANNEL_FMT_ONLY_RIGHT
-```
-
-And you will need to tell it which pins you have connected to the microphone:
-
-```
-#define I2S_MIC_SERIAL_CLOCK GPIO_NUM_33
-#define I2S_MIC_LEFT_RIGHT_CLOCK GPIO_NUM_32
-#define I2S_MIC_SERIAL_DATA GPIO_NUM_25
-```
-
-If you want to have speaker output then you will need to connect or change the following pins to your I2S amplifier:
-
-```
-// speaker settings
-#define I2S_SPEAKER_SERIAL_CLOCK GPIO_NUM_14
-#define I2S_SPEAKER_LEFT_RIGHT_CLOCK GPIO_NUM_12
-#define I2S_SPEAKER_SERIAL_DATA GPIO_NUM_27
-```
-
-Finally, we have the access key for wit.ai - I will leave my key active for as long as possible.
-
-```
-// command recognition settings
-#define COMMAND_RECOGNITION_ACCESS_KEY "UFFEIMRQL7LH4T2DXRHKER4HPMFB4LNH"
-```
+7. Power on the ESP32 device and follow these steps:
+   - The device will start detecting the wake word.
+   - Once the wake word is detected, the device will listen for commands.
+   - Speak the command and wait for the response.
